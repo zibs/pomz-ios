@@ -43,6 +43,7 @@
 //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+                           
                                                       moduleName:@"iozpomz"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
