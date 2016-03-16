@@ -35,6 +35,20 @@ const styles = StyleSheet.create({
   },
 });
 
+
+class WaitForPoem extends Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount(){
+
+  }
+  render(){
+    return(
+      <Text> Cycle Complete ^_^ </Text>
+    );
+  }
+}
 var radio_props = [
   {label: 'daily', value: 'daily' },
   {label: 'yearly', value: 'yearly' },
@@ -46,7 +60,8 @@ class RadioButtonSignUpForm extends Component {
     this.state = {value: 0, push_token: this.props.push_token};
   }
   signUpToApp(value) {
-    fetch("http://59038919.ngrok.com/api/v1/users/", {
+    // fetch("http://59038919.ngrok.com/api/v1/users/", {
+    fetch("http://192.168.1.69:3000/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -55,7 +70,14 @@ class RadioButtonSignUpForm extends Component {
       body: JSON.stringify({
         user: { push_frequency: value, push_token: this.state.push_token },
       })
-    });
+    }).then((response) => response.text())
+      .then((responseText) => {
+        return this.props.renderNewView(<WaitForPoem renderNewView={this.props.renderNewView } />);
+      })
+      .catch((error) => {
+        // display error component
+        console.warn(error);
+      });
    }
   render(){
     {console.log(this.state);}
@@ -64,8 +86,7 @@ class RadioButtonSignUpForm extends Component {
           radio_props={radio_props}
           initial={0}
           /*onPress={(value) => {this.setState({value:value});}}*/
-          onPress={(value) => {this.signUpToApp(value);}}
-
+          onPress={ (value) => {this.signUpToApp(value);} }
         />
     );
   }
@@ -76,7 +97,7 @@ class RequestPushNotifications extends Component {
     super(props);
   }
   sendtoRadioButtons(token){
-    return this.props.renderNewView( <RadioButtonSignUpForm push_token={token}  />);
+    return this.props.renderNewView( <RadioButtonSignUpForm push_token={token} renderNewView={this.props.renderNewView.bind(this)}  />);
   }
   componentDidMount(){
       PushNotificationIOS.requestPermissions();
@@ -118,9 +139,6 @@ class iozpomz extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>")}
-        {console.log(this.state)}
-        {console.log("CURRENT STATE IS " + this.state )}
         {this.state.mainView}
       </View>
     );
