@@ -34,31 +34,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-class RequestPushNotifications extends Component {
-
-  sendtoRadio(token){
-    this.props.renderView(<RadioButtonSignUpForm device_token={token}  />);
-  }
-  pushRequest(){
-    PushNotificationIOS.requestPermissions();
-  }
-  pushToken(){
-    PushNotificationIOS.addEventListener('register', function(token) {
-      return token;
-    }.bind(this));
-  }
-  render() {
-    return (
-      <View style={styles.container}>
-        {this.pushRequest()}
-        {this.sendtoRadio(this.pushToken())}
-        <Text>
-        </Text>
-      </View>
-    );
-  }
-}
 var radio_props = [
   {label: 'daily', value: 0 },
   {label: 'yearly', value: 2 },
@@ -80,30 +55,70 @@ class RadioButtonSignUpForm extends Component {
   }
 }
 
+class RequestPushNotifications extends Component {
+  constructor(props) {
+    super(props);
+    // this.state = ({device_token: 0});
+  }
+  sendtoRadio(token){
+    return this.props.renderNewView( <RadioButtonSignUpForm device_token={token}  />);
+  }
+  componentDidMount(){
+      PushNotificationIOS.requestPermissions();
+      PushNotificationIOS.addEventListener('register', function(token) {
+        // this.setState({device_token: token});
+        this.sendtoRadio(token);
+      }.bind(this));
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>
+          {/*{After component did mount, it will have the correct state, and depending on that state, I could render the correct form?}*/}
+          {console.log(this.props)}
+          {console.log(this.state.device_token)}
+        </Text>
+      </View>
+    );
+  }
+}
+
 class iozpomz extends Component {
   constructor(props) {
     super(props);
     this.state = { mainView: <View></View> };
   }
-  renderView(template) {
-    this.setState({mainView: <RadioButtonSignUpForm /> });
+  renderNewView(template) {
+    this.setState({mainView: template });
   }
   componentDidMount() {
-
-    this.setState({mainView: <RequestPushNotifications renderView={this.renderView.bind(this)}/> });
+    PushNotificationIOS.checkPermissions(function(permissions){
+      if (permissions.badge === 0) {
+        // console.log(typeof(permissions));
+        this.setState({mainView: <RequestPushNotifications renderNewView={this.renderNewView.bind(this)}/>
+        });
+      }
+      else {
+        // we will render the wait for poem thing here.
+        this.setState({mainView: <RadioButtonSignUpForm />
+        });
+      }
+    }.bind(this));
+    // this.setState({mainView: <RequestPushNotifications/>
+    // });
   }
-  displaySignUp(token) {
-    return(
-      <SignUpForm push_token={token} />
-    );
-  }
+  // displaySignUp(token) {
+  //   return(
+  //     <SignUpForm push_token={token} />
+  //   );
+  // }
   render() {
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(this.state.mainView);
     return (
       <View style={styles.container}>
-          {this.state.mainView}
+        {console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>")}
+        {console.log(this.state)}
+        {console.log("CURRENT STATE IS " + this.state )}
+        {this.state.mainView}
       </View>
     );
   }
