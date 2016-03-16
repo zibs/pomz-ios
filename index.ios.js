@@ -76,7 +76,7 @@ class RequestPushNotifications extends Component {
         <Text>
           {/*{After component did mount, it will have the correct state, and depending on that state, I could render the correct form?}*/}
           {console.log(this.props)}
-          {console.log(this.state.device_token)}
+          {/*{console.log(this.state.device_token)}*/}
         </Text>
       </View>
     );
