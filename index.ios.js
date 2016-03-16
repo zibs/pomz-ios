@@ -34,22 +34,38 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
 var radio_props = [
-  {label: 'daily', value: 0 },
-  {label: 'yearly', value: 2 },
-  {label: 'random', value: 3 }
+  {label: 'daily', value: 'daily' },
+  {label: 'yearly', value: 'yearly' },
+  {label: 'random', value: 'random' }
 ];
 class RadioButtonSignUpForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: 0, push_token: this.props.token};
+    this.state = {value: 0, push_token: this.props.push_token};
   }
+  signUpToApp(value) {
+    fetch("http://59038919.ngrok.com/api/v1/users/", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: { push_frequency: value, push_token: this.state.push_token },
+      })
+    });
+   }
   render(){
+    {console.log(this.state);}
     return(
       <Radio
           radio_props={radio_props}
           initial={0}
-          onPress={(value) => {this.setState({value:value});}}
+          /*onPress={(value) => {this.setState({value:value});}}*/
+          onPress={(value) => {this.signUpToApp(value);}}
+
         />
     );
   }
@@ -58,25 +74,20 @@ class RadioButtonSignUpForm extends Component {
 class RequestPushNotifications extends Component {
   constructor(props) {
     super(props);
-    // this.state = ({device_token: 0});
   }
-  sendtoRadio(token){
-    return this.props.renderNewView( <RadioButtonSignUpForm device_token={token}  />);
+  sendtoRadioButtons(token){
+    return this.props.renderNewView( <RadioButtonSignUpForm push_token={token}  />);
   }
   componentDidMount(){
       PushNotificationIOS.requestPermissions();
       PushNotificationIOS.addEventListener('register', function(token) {
-        // this.setState({device_token: token});
-        this.sendtoRadio(token);
+        this.sendtoRadioButtons(token);
       }.bind(this));
   }
   render() {
     return (
       <View style={styles.container}>
         <Text>
-          {/*{After component did mount, it will have the correct state, and depending on that state, I could render the correct form?}*/}
-          {console.log(this.props)}
-          {/*{console.log(this.state.device_token)}*/}
         </Text>
       </View>
     );
@@ -94,24 +105,16 @@ class iozpomz extends Component {
   componentDidMount() {
     PushNotificationIOS.checkPermissions(function(permissions){
       if (permissions.badge === 0) {
-        // console.log(typeof(permissions));
         this.setState({mainView: <RequestPushNotifications renderNewView={this.renderNewView.bind(this)}/>
         });
       }
       else {
-        // we will render the wait for poem thing here.
         this.setState({mainView: <RadioButtonSignUpForm />
         });
       }
     }.bind(this));
-    // this.setState({mainView: <RequestPushNotifications/>
-    // });
   }
-  // displaySignUp(token) {
-  //   return(
-  //     <SignUpForm push_token={token} />
-  //   );
-  // }
+
   render() {
     return (
       <View style={styles.container}>
@@ -123,16 +126,6 @@ class iozpomz extends Component {
     );
   }
 }
-
-// how to pass token to rails app
-// get request with device token in the API
-
-// view is state?
-
-// states:?
-//1. Register for Push Notifications.
-//2. if yes render login form.
-//3. then display wait for poem countdown page
 
 AppRegistry.registerComponent('iozpomz', () => iozpomz, 'SignUpForm', () => SignUpForm, 'RequestPushNotifications', () => RequestPushNotifications);
 
