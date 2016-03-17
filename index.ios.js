@@ -11,8 +11,8 @@ var {
   StyleSheet,
   Text,
   PushNotificationIOS,
+  View,
   WebView,
-  View
 } = React;
 import Radio, {RadioButton} from 'react-native-simple-radio-button';
 
@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  webView: {
+   backgroundColor: "rgba(255,255,255,0.8)",
+   height: 350,
+   width: 300,
+ },
 });
 
 var radio_props = [
@@ -117,7 +122,27 @@ class RequestPushNotifications extends Component {
 class PoemView extends Component {
   constructor(props) {
     super(props);
-    this.setState({});
+    this.state = {
+      url: this.props.poemUrl,
+      // url: "https://inbox.google.com/",
+      status: 'No Page Loaded',
+      backButtonEnabled: false,
+      forwardButtonEnabled: false,
+      loading: true,
+      scalesPageToFit: true,
+    };
+  }
+  render() {
+    return(
+      <WebView
+          ref='webview'
+          style={styles.webView}
+          automaticallyAdjustContentInsets={false}
+          source={{uri: this.state.url}}
+          scalesPageToFit={this.state.scalesPageToFit}
+          startInLoadingState={true}
+          />
+    );
   }
 }
 
@@ -136,18 +161,23 @@ class iozpomz extends Component {
         });
       }
       else {
-        this.setState({mainView: <RadioButtonSignUpForm />
-        });
+        // this.setState({mainView: <PoemView /> });
+        // this.setState({mainView: <RadioButtonSignUpForm />
+        // });
         PushNotificationIOS.addEventListener('notification', function(notification){
           console.log(notification);
-          console.log(notification._data.pom_url);
-          console.log(notification._alert);
-          // this.setState({mainView: <Text></Text>});
-        });
+          this.setState({mainView: <PoemView poemUrl={notification._data.poem_url} />});
+          // console.log(notification);
+          // console.log(notification._data.pom_url);
+          // console.log(notification._alert);
+          // this.setState({mainView: <PoemView poemUrl=notification._data.pom_url})
+        }.bind(this));
       }
     }.bind(this));
   }
   render() {
+    // console.log("the current state is:");
+    // console.log(this.state);
     return (
       <View style={styles.container}>
         {this.state.mainView}
@@ -156,7 +186,7 @@ class iozpomz extends Component {
   }
 }
 
-AppRegistry.registerComponent('iozpomz', () => iozpomz, 'SignUpForm', () => SignUpForm, 'RequestPushNotifications', () => RequestPushNotifications);
+AppRegistry.registerComponent('iozpomz', () => iozpomz, 'RadioButtonSignUpForm', () => RadioButtonSignUpForm, 'RequestPushNotifications', () => RequestPushNotifications, 'PoemView', () => PoemView);
 
 
 // check what the push notification delivers
