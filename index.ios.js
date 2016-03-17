@@ -124,7 +124,6 @@ class PoemView extends Component {
     super(props);
     this.state = {
       url: this.props.poemUrl,
-      // url: "https://inbox.google.com/",
       status: 'No Page Loaded',
       backButtonEnabled: false,
       forwardButtonEnabled: false,
@@ -155,29 +154,26 @@ class iozpomz extends Component {
     this.setState({mainView: template });
   }
   componentDidMount() {
+    // display poem on cold-launch
+    const notification = PushNotificationIOS.popInitialNotification();
+    if (notification){
+      this.setState({mainView: <PoemView poemUrl={notification._data.poem_url}/>});
+    }
+    // check if permissions are enabled for push.
     PushNotificationIOS.checkPermissions(function(permissions){
       if (permissions.badge === 0) {
         this.setState({mainView: <RequestPushNotifications renderNewView={this.renderNewView.bind(this)}/>
         });
       }
+    // app is otherwise open - display poem upon push notification.
       else {
-        // this.setState({mainView: <PoemView /> });
-        // this.setState({mainView: <RadioButtonSignUpForm />
-        // });
         PushNotificationIOS.addEventListener('notification', function(notification){
-          console.log(notification);
           this.setState({mainView: <PoemView poemUrl={notification._data.poem_url} />});
-          // console.log(notification);
-          // console.log(notification._data.pom_url);
-          // console.log(notification._alert);
-          // this.setState({mainView: <PoemView poemUrl=notification._data.pom_url})
         }.bind(this));
       }
     }.bind(this));
   }
   render() {
-    // console.log("the current state is:");
-    // console.log(this.state);
     return (
       <View style={styles.container}>
         {this.state.mainView}
@@ -187,13 +183,6 @@ class iozpomz extends Component {
 }
 
 AppRegistry.registerComponent('iozpomz', () => iozpomz, 'RadioButtonSignUpForm', () => RadioButtonSignUpForm, 'RequestPushNotifications', () => RequestPushNotifications, 'PoemView', () => PoemView);
-
-
-// check what the push notification delivers
-// I think have checked that? I can send the device token in the push notification?
-//
-
-
 
 // { _data: { pom_url: 'http://localhost:3000/api/v1/poems/03-16-2016' },
 //   _alert: 'a pom 4 u',
