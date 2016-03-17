@@ -35,13 +35,17 @@ const styles = StyleSheet.create({
   },
 });
 
+var radio_props = [
+  {label: 'daily', value: 'daily' },
+  {label: 'yearly', value: 'yearly' },
+  {label: 'random', value: 'random' }
+];
 
 class WaitForPoem extends Component {
   constructor(props) {
     super(props);
   }
   componentDidMount(){
-
   }
   render(){
     return(
@@ -49,11 +53,7 @@ class WaitForPoem extends Component {
     );
   }
 }
-var radio_props = [
-  {label: 'daily', value: 'daily' },
-  {label: 'yearly', value: 'yearly' },
-  {label: 'random', value: 'random' }
-];
+
 class RadioButtonSignUpForm extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +61,7 @@ class RadioButtonSignUpForm extends Component {
   }
   signUpToApp(value) {
     // fetch("http://59038919.ngrok.com/api/v1/users/", {
-    fetch("http://192.168.1.69:3000/api/v1/users/", {
+    fetch("http://192.168.1.145:3000/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -114,6 +114,12 @@ class RequestPushNotifications extends Component {
     );
   }
 }
+class PoemView extends Component {
+  constructor(props) {
+    super(props);
+    this.setState({});
+  }
+}
 
 class iozpomz extends Component {
   constructor(props) {
@@ -132,10 +138,15 @@ class iozpomz extends Component {
       else {
         this.setState({mainView: <RadioButtonSignUpForm />
         });
+        PushNotificationIOS.addEventListener('notification', function(notification){
+          console.log(notification);
+          console.log(notification._data.pom_url);
+          console.log(notification._alert);
+          // this.setState({mainView: <Text></Text>});
+        });
       }
     }.bind(this));
   }
-
   render() {
     return (
       <View style={styles.container}>
@@ -147,6 +158,14 @@ class iozpomz extends Component {
 
 AppRegistry.registerComponent('iozpomz', () => iozpomz, 'SignUpForm', () => SignUpForm, 'RequestPushNotifications', () => RequestPushNotifications);
 
-  // {PushNotificationIOS.addEventListener('notification', function(notification){
-  //   console.log('You have received a new notification!', notification);
-  //   })}
+
+// check what the push notification delivers
+// I think have checked that? I can send the device token in the push notification?
+//
+
+
+
+// { _data: { pom_url: 'http://localhost:3000/api/v1/poems/03-16-2016' },
+//   _alert: 'a pom 4 u',
+//   _sound: 'default',
+//   _badgeCount: undefined }
