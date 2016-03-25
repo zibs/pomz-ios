@@ -13,6 +13,7 @@ var {
   Text,
   PushNotificationIOS,
   View,
+  Navigator,
   WebView,
 } = React;
 
@@ -89,16 +90,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
   webView: {
    backgroundColor: "rgba(255,255,255,0.8)",
    height: 350,
@@ -127,7 +118,10 @@ class WaitForPoem extends Component {
   }
   viewedThanks(currentAppState){
     if (this.state.viewed) {
-      return this.props.renderNewView(<CountDownPoem />);
+      this.props.navigator.push({
+        name: "CountDownPoem",
+        component: CountDownPoem
+      });
     } else {
       return this.setState({viewed: true});
     }
@@ -137,10 +131,10 @@ class WaitForPoem extends Component {
   }
   render(){
     return(
-      <Text>
-        <Text>Thanks</Text>
-        <Text></Text>
-      </Text>
+      <View style={styles.container}>
+        <Text>Thanks, now wait.</Text>
+      </View>
+
     );
   }
 }
@@ -148,35 +142,39 @@ class WaitForPoem extends Component {
 class RadioButtonSignUpForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: 4, push_token: this.props.push_token};
+    this.state = {value: 4};
   }
   signUpToApp(value) {
     // fetch("http://59038919.ngrok.com/api/v1/users/", {
-    fetch("http://192.168.1.71:3000/api/v1/users/", {
+    fetch("http://192.168.1.145:3000/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        user: { push_frequency: value, push_token: this.state.push_token },
+        user: { push_frequency: value, push_token: this.props.push_token },
       })
     }).then((response) => response.text())
       .then((responseText) => {
-        return this.props.renderNewView(<WaitForPoem renderNewView={this.props.renderNewView } />);
+        this.props.navigator.push({
+          name: "WaitForPoem",
+          component: WaitForPoem
+        });
       })
       .catch((error) => {
         console.warn(error);
       });
    }
   render(){
-    {console.log(this.state);}
     return(
-      <Radio
+      <View style={styles.container}>
+        <Radio
           radio_props={radio_props}
           initial={this.state.value}
           onPress={ (value) => {this.signUpToApp(value);} }
         />
+      </View>
     );
   }
 }
@@ -186,19 +184,26 @@ class RequestPushNotifications extends Component {
     super(props);
   }
   sendtoRadioButtons(token){
-    return this.props.renderNewView( <RadioButtonSignUpForm push_token={token} renderNewView={this.props.renderNewView.bind(this)}  />);
+    console.log("in the right methods");
+    this.props.navigator.push({
+      name: "RadioButtonSignUpForm",
+      component: RadioButtonSignUpForm,
+      props: { push_token: token }
+    });
   }
   componentDidMount(){
-      PushNotificationIOS.requestPermissions();
-      PushNotificationIOS.addEventListener('register', function(token) {
+        PushNotificationIOS.requestPermissions();
+
+        PushNotificationIOS.addEventListener('register', function(token) {
+        console.log("logged from listener");
+        console.log(token);
         this.sendtoRadioButtons(token);
-      }.bind(this));
+        }.bind(this));
+
   }
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-        </Text>
       </View>
     );
   }
@@ -258,7 +263,10 @@ class PoemView extends Component {
   }
   viewablePoem(currentAppState){
     if (this.state.viewed) {
-      return this.props.renderNewView(<CountDownPoem />);
+      this.props.navigator.push({
+        name: "CountDownPoem",
+        component: CountDownPoem
+      });
     } else {
       return this.setState({viewed: true});
     }
@@ -279,62 +287,70 @@ class PoemView extends Component {
     );
   }
 }
-
-class iozpomz extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { mainView: <View></View> };
-  }
-  renderNewView(template) {
-    this.setState({mainView: template });
-  }
-  componentDidMount() {
-    // display poem on cold-launch
-    // check if permissions are enabled for push.
+class appController extends Component {
+  componentDidMount(){
     PushNotificationIOS.checkPermissions(function(permissions){
       if (permissions.badge === 0) {
-        this.setState({
-          mainView:
-          <RequestPushNotifications renderNewView={this.renderNewView.bind(this)}/>
+        this.props.navigator.push({
+          name: 'RequestPushNotifications',
+          component: RequestPushNotifications,
         });
       }
     // app is otherwise open - display poem upon push notification.
       else {
         PushNotificationIOS.addEventListener('notification', function(notification){
-          console.log(notification);
-          this.setState({
-            mainView:
-              <PoemView
-                poemUrl={notification._data.poem_url} renderNewView={this.renderNewView.bind(this) }
-                />
-            });
+          this.props.navigator.push({
+            name: "PoemView",
+            component: PoemView,
+            poemUrl: notification._data.poem_url
+          });
         }.bind(this));
       }
     }.bind(this));
-
     const notification = PushNotificationIOS.popInitialNotification();
       if (notification){
-        this.setState({
-          mainView:
-            <PoemView
-              poemUrl={notification._data.poem_url}        renderNewView={this.renderNewView.bind(this)}
-            />
+        this.props.navigator.push({
+          name: "PoemView",
+          component: PoemView,
+          poemUrl: notification._data.poem_url
         });
       } else {
       // finally, display countdown poem page since the user has already seen the poem.
-      this.setState({
-        mainView:
-          <CountDownPoem
-            hours={numToWord[(24 - (new Date().getHours())).toString()]}
-            minutes={numToWord[(60 - (new Date().getMinutes())).toString()]} seconds={numToWord[(60 - (new Date().getMinutes())).toString()]}
-      /> });
+      this.props.navigator.push({
+        name: "CountDownPoem",
+        component: CountDownPoem,
+        hours: numToWord[(24 - (new Date().getHours())).toString()],
+        minutes: numToWord[(60 - (new Date().getMinutes())).toString()],
+        seconds: numToWord[(60 - (new Date().getMinutes())).toString()]
+      });
     }
   }
   render() {
     return (
-      <View style={styles.container}>
-        {this.state.mainView}
-      </View>
+      <View></View>
+    );
+  }
+
+}
+
+class iozpomz extends Component {
+  _renderScene(route, navigator) {
+    var Component = route.component;
+    return (
+      <Component {...route.props} navigator={navigator} route={route} />
+    );
+  }
+  render() {
+    return (
+        <Navigator
+          initialRoute={{
+            name: "appController",
+            component: appController
+          }}
+          configureScene={() => {
+              return Navigator.SceneConfigs.FloatFromRight;
+          }}
+          renderScene={this._renderScene} />
     );
   }
 }
@@ -345,3 +361,13 @@ AppRegistry.registerComponent('iozpomz', () => iozpomz, 'RadioButtonSignUpForm',
 //   _alert: 'a pom 4 u',
 //   _sound: 'default',
 //   _badgeCount: undefined }
+
+
+// (route, navigator) => {
+//     if (route.component) {
+//         return React.createElement(route.component, {
+//           navigator: navigator
+//
+//         });
+//     }
+// }
