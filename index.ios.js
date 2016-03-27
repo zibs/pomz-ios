@@ -146,7 +146,7 @@ class RadioButtonSignUpForm extends Component {
   }
   signUpToApp(value) {
     // fetch("http://59038919.ngrok.com/api/v1/users/", {
-    fetch("http://192.168.1.145:3000/api/v1/users/", {
+    fetch("http://192.168.1.71:3000/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -182,6 +182,7 @@ class RadioButtonSignUpForm extends Component {
 class RequestPushNotifications extends Component {
   constructor(props) {
     super(props);
+    this.state = {whyNot: 4};
   }
   sendtoRadioButtons(token){
     console.log("in the right methods");
@@ -192,14 +193,11 @@ class RequestPushNotifications extends Component {
     });
   }
   componentDidMount(){
-        PushNotificationIOS.requestPermissions();
-
-        PushNotificationIOS.addEventListener('register', function(token) {
-        console.log("logged from listener");
-        console.log(token);
-        this.sendtoRadioButtons(token);
-        }.bind(this));
-
+    PushNotificationIOS.requestPermissions();
+    PushNotificationIOS.addEventListener('register', function(token) {
+    console.log(token);
+    this.sendtoRadioButtons(token);
+    }.bind(this));
   }
   render() {
     return (
@@ -252,7 +250,7 @@ class PoemView extends Component {
     super(props);
     this.state = {
       appState: AppStateIOS.currentState,
-      url: this.props.poemUrl,
+      url: this.props.route.poemUrl,
       status: 'No Page Loaded',
       backButtonEnabled: false,
       forwardButtonEnabled: false,
@@ -262,19 +260,18 @@ class PoemView extends Component {
     };
   }
   viewablePoem(currentAppState){
-    if (this.state.viewed) {
+    if (currentAppState === "background") {
       this.props.navigator.push({
         name: "CountDownPoem",
         component: CountDownPoem
       });
-    } else {
-      return this.setState({viewed: true});
     }
   }
   componentDidMount(){
     AppStateIOS.addEventListener('change', this.viewablePoem.bind(this));
   }
   render() {
+
     return(
       <WebView
           ref='webview'
@@ -289,24 +286,25 @@ class PoemView extends Component {
 }
 class appController extends Component {
   componentDidMount(){
-    PushNotificationIOS.checkPermissions(function(permissions){
-      if (permissions.badge === 0) {
-        this.props.navigator.push({
-          name: 'RequestPushNotifications',
-          component: RequestPushNotifications,
-        });
-      }
-    // app is otherwise open - display poem upon push notification.
-      else {
-        PushNotificationIOS.addEventListener('notification', function(notification){
-          this.props.navigator.push({
-            name: "PoemView",
-            component: PoemView,
-            poemUrl: notification._data.poem_url
-          });
+
+        PushNotificationIOS.checkPermissions(function(permissions){
+          if (permissions.badge === 0) {
+            this.props.navigator.push({
+              name: 'RequestPushNotifications',
+              component: RequestPushNotifications,
+            });
+          }
+          else if (permissions.badge >= 1 && notification === null) {
+            this.props.navigator.push({
+              name: "CountDownPoem",
+              component: CountDownPoem,
+              hours: numToWord[(24 - (new Date().getHours())).toString()],
+              minutes: numToWord[(60 - (new Date().getMinutes())).toString()],
+              seconds: numToWord[(60 - (new Date().getMinutes())).toString()]
+            });
+          }
         }.bind(this));
-      }
-    }.bind(this));
+
     const notification = PushNotificationIOS.popInitialNotification();
       if (notification){
         this.props.navigator.push({
@@ -314,20 +312,24 @@ class appController extends Component {
           component: PoemView,
           poemUrl: notification._data.poem_url
         });
-      } else {
-      // finally, display countdown poem page since the user has already seen the poem.
-      this.props.navigator.push({
-        name: "CountDownPoem",
-        component: CountDownPoem,
-        hours: numToWord[(24 - (new Date().getHours())).toString()],
-        minutes: numToWord[(60 - (new Date().getMinutes())).toString()],
-        seconds: numToWord[(60 - (new Date().getMinutes())).toString()]
-      });
-    }
+      }
+
+    PushNotificationIOS.addEventListener('notification', function(notification){
+        this.props.navigator.push({
+          name: "PoemView",
+          component: PoemView,
+          poemUrl: notification._data.poem_url
+          });
+      }.bind(this));
+
+
+    // app is otherwise open - display poem upon push notification.
+
   }
   render() {
     return (
-      <View></View>
+      <View>
+      </View>
     );
   }
 
