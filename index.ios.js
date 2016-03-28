@@ -88,15 +88,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#fcfcfc',
+  },
+  thanksContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: "center",
+    backgroundColor: "rgba(26, 28, 27, 1)",
+  },
+  thanksText: {
+    backgroundColor: "rgba(26, 28, 27, 1)",
+    color: "rgb(251, 251, 251)",
+    lineHeight: 50,
+    fontSize: 30,
   },
   webView: {
    backgroundColor: "rgba(255,255,255,0.8)",
    height: 350,
    width: 300,
  },
+ poemWaiterWrap:{
+   flex: 1,
+   flexDirection: "row",
+   alignItems: 'center',
+   justifyContent: "center",
+   backgroundColor: "rgba(26, 28, 27, 1)",
+ },
  poemWaiter: {
-  //  backgroundColor: "rgba(104, 185, 155, 0.7)",
+   backgroundColor: "rgba(26, 28, 27, 1)",
+   color: "rgb(251, 251, 251)",
    lineHeight: 50,
    fontSize: 30,
  },
@@ -113,17 +134,14 @@ class WaitForPoem extends Component {
     super(props);
       this.state = {
         appState: AppStateIOS.currentState,
-        viewed: false,
       };
   }
   viewedThanks(currentAppState){
-    if (this.state.viewed) {
+    if (currentAppState === "background") {
       this.props.navigator.push({
         name: "CountDownPoem",
         component: CountDownPoem
       });
-    } else {
-      return this.setState({viewed: true});
     }
   }
   componentDidMount(){
@@ -131,8 +149,8 @@ class WaitForPoem extends Component {
   }
   render(){
     return(
-      <View style={styles.container}>
-        <Text>Thanks, now wait.</Text>
+      <View style={styles.thanksContainer}>
+        <Text style={styles.thanksText}>Thanks, now wait.</Text>
       </View>
 
     );
@@ -145,8 +163,7 @@ class RadioButtonSignUpForm extends Component {
     this.state = {value: 4};
   }
   signUpToApp(value) {
-    // fetch("http://59038919.ngrok.com/api/v1/users/", {
-    fetch("http://192.168.1.71:3000/api/v1/users/", {
+    fetch("https://pomzer.herokuapp.com/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -182,10 +199,8 @@ class RadioButtonSignUpForm extends Component {
 class RequestPushNotifications extends Component {
   constructor(props) {
     super(props);
-    this.state = {whyNot: 4};
   }
   sendtoRadioButtons(token){
-    console.log("in the right methods");
     this.props.navigator.push({
       name: "RadioButtonSignUpForm",
       component: RadioButtonSignUpForm,
@@ -206,6 +221,7 @@ class RequestPushNotifications extends Component {
     );
   }
 }
+
 class CountDownPoem extends Component {
   constructor(props){
     super(props);
@@ -235,12 +251,14 @@ class CountDownPoem extends Component {
   }
   render() {
     return(
-      <Text style={styles.poemWaiter}>
-        <Text>a nu 1 in {"\n"}</Text>
+      <View style={styles.poemWaiterWrap}>
+        <Text style={styles.poemWaiter}>
+            <Text>a nu 1 in {"\n"}</Text>
             <Text>{this.state.hours} hours, {"\n"}</Text>
             <Text>{this.state.minutes} minutes, {"\n"}</Text>
             <Text>{this.state.seconds} seconds {"\n"}</Text>
-      </Text>
+        </Text>
+      </View>
     );
   }
 }
@@ -284,9 +302,9 @@ class PoemView extends Component {
     );
   }
 }
+
 class appController extends Component {
   componentDidMount(){
-
         PushNotificationIOS.checkPermissions(function(permissions){
           if (permissions.badge === 0) {
             this.props.navigator.push({
@@ -321,10 +339,6 @@ class appController extends Component {
           poemUrl: notification._data.poem_url
           });
       }.bind(this));
-
-
-    // app is otherwise open - display poem upon push notification.
-
   }
   render() {
     return (
@@ -332,7 +346,6 @@ class appController extends Component {
       </View>
     );
   }
-
 }
 
 class iozpomz extends Component {
@@ -357,19 +370,4 @@ class iozpomz extends Component {
   }
 }
 
-AppRegistry.registerComponent('iozpomz', () => iozpomz, 'RadioButtonSignUpForm', () => RadioButtonSignUpForm, 'RequestPushNotifications', () => RequestPushNotifications, 'PoemView', () => PoemView);
-
-// { _data: { pom_url: 'http://localhost:3000/api/v1/poems/03-16-2016' },
-//   _alert: 'a pom 4 u',
-//   _sound: 'default',
-//   _badgeCount: undefined }
-
-
-// (route, navigator) => {
-//     if (route.component) {
-//         return React.createElement(route.component, {
-//           navigator: navigator
-//
-//         });
-//     }
-// }
+AppRegistry.registerComponent('iozpomz', () => iozpomz, 'RadioButtonSignUpForm', () => RadioButtonSignUpForm, 'RequestPushNotifications', () => RequestPushNotifications, 'PoemView', () => PoemView, 'WaitForPoem', () => WaitForPoem, "appController", () => appController);
