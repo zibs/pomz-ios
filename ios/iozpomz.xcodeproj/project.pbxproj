@@ -682,7 +682,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.codetxt.pomzer;
 				PRODUCT_NAME = iozpomz;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6e7d222c-e999-4102-9f12-2ba8af2fe237";
 			};
 			name = Debug;
 		};
@@ -708,7 +708,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.codetxt.pomzer;
 				PRODUCT_NAME = iozpomz;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6e7d222c-e999-4102-9f12-2ba8af2fe237";
 			};
 			name = Release;
 		};
