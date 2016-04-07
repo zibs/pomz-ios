@@ -121,6 +121,12 @@ const styles = StyleSheet.create({
    lineHeight: 50,
    fontSize: 30,
  },
+ poemWaiterino: {
+   backgroundColor: "rgba(26, 28, 27, 1)",
+   color: "rgb(251, 251, 251)",
+   lineHeight: 80,
+   fontSize: 30,
+ },
 });
 
 var radio_props = [
@@ -149,10 +155,13 @@ class WaitForPoem extends Component {
   }
   render(){
     return(
-      <View style={styles.thanksContainer}>
-        <Text style={styles.thanksText}>Thanks, now wait.</Text>
+      <View style={styles.poemWaiterWrap}>
+        <Text style={styles.poemWaiterino}>
+            <Text>Thanks, now wait {"\n"}</Text>
+            <Text>for great {"\n"}</Text>
+            <Text>poetry {"\n"}</Text>
+        </Text>
       </View>
-
     );
   }
 }
@@ -163,7 +172,7 @@ class RadioButtonSignUpForm extends Component {
     this.state = {value: 4};
   }
   signUpToApp(value) {
-    fetch("https://pomzer.herokuapp.com/api/v1/users/", {
+    fetch("http://192.168.1.145:3000/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -253,7 +262,7 @@ class CountDownPoem extends Component {
     return(
       <View style={styles.poemWaiterWrap}>
         <Text style={styles.poemWaiter}>
-            <Text>a nu 1 in {"\n"}</Text>
+            <Text>a new pom in {"\n"}</Text>
             <Text>{this.state.hours} hours, {"\n"}</Text>
             <Text>{this.state.minutes} minutes, {"\n"}</Text>
             <Text>{this.state.seconds} seconds {"\n"}</Text>
@@ -279,6 +288,7 @@ class PoemView extends Component {
   }
   viewablePoem(currentAppState){
     if (currentAppState === "background") {
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
       this.props.navigator.push({
         name: "CountDownPoem",
         component: CountDownPoem
@@ -289,7 +299,6 @@ class PoemView extends Component {
     AppStateIOS.addEventListener('change', this.viewablePoem.bind(this));
   }
   render() {
-
     return(
       <WebView
           ref='webview'
@@ -305,26 +314,28 @@ class PoemView extends Component {
 
 class appController extends Component {
   componentDidMount(){
-        PushNotificationIOS.checkPermissions(function(permissions){
-          if (permissions.badge === 0) {
-            this.props.navigator.push({
-              name: 'RequestPushNotifications',
-              component: RequestPushNotifications,
-            });
-          }
-          else if (permissions.badge >= 1 && notification === null) {
-            this.props.navigator.push({
-              name: "CountDownPoem",
-              component: CountDownPoem,
-              hours: numToWord[(24 - (new Date().getHours())).toString()],
-              minutes: numToWord[(60 - (new Date().getMinutes())).toString()],
-              seconds: numToWord[(60 - (new Date().getMinutes())).toString()]
-            });
-          }
-        }.bind(this));
+    PushNotificationIOS.checkPermissions(function(permissions){
+      if (permissions.badge === 0) {
+        this.props.navigator.push({
+          name: 'RequestPushNotifications',
+          component: RequestPushNotifications,
+        });
+      }
+      else if (notification === null) {
+        console.log(notification);
+        this.props.navigator.push({
+          name: "CountDownPoem",
+          component: CountDownPoem,
+          hours: numToWord[(24 - (new Date().getHours())).toString()],
+          minutes: numToWord[(60 - (new Date().getMinutes())).toString()],
+          seconds: numToWord[(60 - (new Date().getMinutes())).toString()]
+        });
+      }
+    }.bind(this));
 
     const notification = PushNotificationIOS.popInitialNotification();
       if (notification){
+        console.log(notification);
         this.props.navigator.push({
           name: "PoemView",
           component: PoemView,
@@ -333,6 +344,7 @@ class appController extends Component {
       }
 
     PushNotificationIOS.addEventListener('notification', function(notification){
+      console.log(notification);
         this.props.navigator.push({
           name: "PoemView",
           component: PoemView,
