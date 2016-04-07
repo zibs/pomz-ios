@@ -10,12 +10,15 @@
 #import "AppDelegate.h"
 #import "RCTRootView.h"
 #import "RCTPushNotificationManager.h"
+#import <BuddyBuildSDK/BuddyBuildSDK.h>
 
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [BuddyBuildSDK setup];
+  
   NSURL *jsCodeLocation;
 
   /**
