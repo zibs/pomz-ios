@@ -22,6 +22,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		216A875E1C98D5DE005A72E1 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 216A87581C98D591005A72E1 /* libRCTPushNotification.a */; };
+		21767A5C1CB97B9D00E85077 /* libAppHub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21767A4E1CB97B2E00E85077 /* libAppHub.a */; };
+		21767A5E1CB97B9D00E85077 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 21767A5D1CB97B9D00E85077 /* libz.tbd */; };
 		2BAC5334C8C028513C44C734 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5596757D2C58952BD6EF75BB /* QuartzCore.framework */; };
 		4A86779A945555967EBC28A7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C35E6E4A1D5FEB9346A4A22A /* SystemConfiguration.framework */; };
 		653F7337B9AAB8303B72C5E1 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC35496AC5789CA9E4B35F /* CoreTelephony.framework */; };
@@ -101,6 +103,20 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTPushNotification;
 		};
+		21767A4D1CB97B2E00E85077 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21767A461CB97B2D00E85077 /* AppHub.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 555FF3AF1B37AC8D0064F175;
+			remoteInfo = AppHub;
+		};
+		21767A4F1CB97B2E00E85077 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21767A461CB97B2D00E85077 /* AppHub.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 555FF3BA1B37AC8D0064F175;
+			remoteInfo = AppHubTests;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -137,6 +153,8 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = iozpomz/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		216A874E1C98D591005A72E1 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
+		21767A461CB97B2D00E85077 /* AppHub.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AppHub.xcodeproj; path = ../node_modules/apphub/AppHub/AppHub.xcodeproj; sourceTree = "<group>"; };
+		21767A5D1CB97B9D00E85077 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		271642A5F24E73EAC36AEC95 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		5596757D2C58952BD6EF75BB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -159,6 +177,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21767A5E1CB97B9D00E85077 /* libz.tbd in Frameworks */,
+				21767A5C1CB97B9D00E85077 /* libAppHub.a in Frameworks */,
+				4A86779A945555967EBC28A7 /* SystemConfiguration.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				216A875E1C98D5DE005A72E1 /* libRCTPushNotification.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -174,7 +195,6 @@
 				E9CF8158C1ADC7B33E049D5D /* AssetsLibrary.framework in Frameworks */,
 				CD1EEBE71496E1D5F23276FA /* CoreText.framework in Frameworks */,
 				653F7337B9AAB8303B72C5E1 /* CoreTelephony.framework in Frameworks */,
-				4A86779A945555967EBC28A7 /* SystemConfiguration.framework in Frameworks */,
 				2BAC5334C8C028513C44C734 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +304,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		21767A471CB97B2D00E85077 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				21767A4E1CB97B2E00E85077 /* libAppHub.a */,
+				21767A501CB97B2E00E85077 /* AppHub.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,6 +324,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				21767A461CB97B2D00E85077 /* AppHub.xcodeproj */,
 				216A874E1C98D591005A72E1 /* RCTPushNotification.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -343,6 +373,7 @@
 		AD017F869D50F806630BE15D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				21767A5D1CB97B9D00E85077 /* libz.tbd */,
 				F3E8D99C453F662620233ECD /* BuddyBuildSDK.framework */,
 				C03B119B1501A0E19507A2D3 /* AssetsLibrary.framework */,
 				271642A5F24E73EAC36AEC95 /* CoreText.framework */,
@@ -427,6 +458,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 21767A471CB97B2D00E85077 /* Products */;
+					ProjectRef = 21767A461CB97B2D00E85077 /* AppHub.xcodeproj */;
+				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -542,6 +577,20 @@
 			fileType = archive.ar;
 			path = libRCTPushNotification.a;
 			remoteRef = 216A87571C98D591005A72E1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		21767A4E1CB97B2E00E85077 /* libAppHub.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libAppHub.a;
+			remoteRef = 21767A4D1CB97B2E00E85077 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		21767A501CB97B2E00E85077 /* AppHub.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AppHub.xctest;
+			remoteRef = 21767A4F1CB97B2E00E85077 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
@@ -676,6 +725,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/apphub/AppHub/**",
 				);
 				INFOPLIST_FILE = iozpomz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -702,6 +752,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/apphub/AppHub/**",
 				);
 				INFOPLIST_FILE = iozpomz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

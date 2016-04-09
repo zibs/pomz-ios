@@ -172,7 +172,7 @@ class RadioButtonSignUpForm extends Component {
     this.state = {value: 4};
   }
   signUpToApp(value) {
-    fetch("http://192.168.1.145:3000/api/v1/users/", {
+    fetch("https://pomzer.herokuapp.com/api/v1/users/", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
